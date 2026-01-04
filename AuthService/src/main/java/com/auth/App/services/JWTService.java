@@ -2,12 +2,16 @@ package com.auth.App.services;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -15,17 +19,25 @@ import java.util.function.Function;
 public class JWTService {
     private static final String SECRET = "357638792F423F4428472B4B6250655368566D597133743677397A2443264629";
 
-    public static String createToken(Claims claims) {
-        var key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
-        var now = new Date();
-        var exp = new Date(now.getTime() + 3600_000); // 1 hour
+    public String generateToken(String username){
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, username);
+    }
 
+
+
+    private String createToken(Map<String, Object> claims, String username) {
         return Jwts.builder()
-                   .subject(claims.getSubject())
-                   .issuedAt(now)
-                   .expiration(exp)
-                   .signWith(key)
-                   .compact();
+                   .claims(claims)
+                   .subject(username)
+                   .issuedAt(new Date(System.currentTimeMillis()))
+                   .expiration(new Date(System.currentTimeMillis()+1000*60*1))
+                   .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
+    }
+
+    private Key getSignKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String getUsername(String token) {
