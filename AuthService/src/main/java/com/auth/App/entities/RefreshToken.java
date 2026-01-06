@@ -1,10 +1,7 @@
 package com.auth.App.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 
@@ -14,6 +11,7 @@ import java.time.Instant;
 @Data
 @Builder(toBuilder = true)
 @Table(name = "tokens")
+@Getter
 public class RefreshToken {
 
     @Id
@@ -24,7 +22,7 @@ public class RefreshToken {
 
     private Instant expiresAt;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id", referencedColumnName = "user_id")
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private UserInfo user;
 }

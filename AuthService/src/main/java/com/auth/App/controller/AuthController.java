@@ -14,12 +14,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
 @AllArgsConstructor
-@RestController("/auth")
+@RestController
+@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
@@ -43,7 +45,7 @@ public class AuthController {
             }
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(req.getUsername());
             String jwtToken = jwtService.generateToken(req.getUsername());
-            return ResponseEntity.ok(Map.of("jwtToken", jwtToken, "refresh;Token", refreshToken.getToken()));
+            return ResponseEntity.ok(Map.of("token", jwtToken, "refreshToken", refreshToken.getToken()));
         } catch(Exception ex) {
             return ResponseEntity.internalServerError().body("An error occurred during signup");
         }
@@ -56,11 +58,11 @@ public class AuthController {
             if(authenticate.isAuthenticated()) {
                 RefreshToken refreshToken = refreshTokenService.createRefreshToken(req.getUsername());
                 String jwtToken = jwtService.generateToken(req.getUsername());
-                return ResponseEntity.ok(Map.of("jwtToken", jwtToken, "refresh;Token", refreshToken.getToken()));
+                return ResponseEntity.ok(Map.of("token", jwtToken, "refreshToken", refreshToken.getToken()));
             }
             return ResponseEntity.badRequest().body("Invalid credentials");
         } catch(Exception ex) {
-            return ResponseEntity.internalServerError().body("An error occurred during signup");
+            return ResponseEntity.internalServerError().body("An error occurred during login");
         }
     }
 }

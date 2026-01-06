@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.UUID;
 
 @Service
@@ -45,7 +46,7 @@ public class UserDetailsService implements org.springframework.security.core.use
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setUserId(UUID.randomUUID().toString());
-        userRepository.save(user);
+        userRepository.save(new UserInfo(user.getUserId(),user.getUsername(), user.getPassword(), new HashSet<>()));
         return true;
     }
 }

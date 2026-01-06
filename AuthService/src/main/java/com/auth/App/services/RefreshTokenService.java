@@ -29,15 +29,15 @@ public class RefreshTokenService {
         return refreshTokenRepository.save(refreshToken);
     }
 
-    public RefreshToken verifyRefreshToken(RefreshToken token) {
-        if(token.getExpiresAt().compareTo(Instant.now()) <= 0) {
+    public RefreshToken verifyExpiration(RefreshToken token){
+        if(token.getExpiresAt().compareTo(Instant.now()) < 0){
             refreshTokenRepository.delete(token);
-            throw new RuntimeException(token.getToken()+" Refresh token is expired. Please make a new signin request");
+            throw new RuntimeException(token.getToken() + " Refresh token is expired. Please make a new login..!");
         }
         return token;
     }
 
-    Optional<RefreshToken> findByToken(String token) {
+    public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);
     }
 }
