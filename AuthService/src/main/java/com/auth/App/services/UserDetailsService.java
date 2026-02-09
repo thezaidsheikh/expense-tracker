@@ -1,6 +1,7 @@
 package com.auth.App.services;
 
 import com.auth.App.entities.UserInfo;
+import com.auth.App.eventProducer.UserInfoProducer;
 import com.auth.App.model.UserInfoDto;
 import com.auth.App.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -10,15 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.UUID;
 
-@Service
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@Component
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
 
     @Autowired
@@ -26,6 +27,9 @@ public class UserDetailsService implements org.springframework.security.core.use
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserInfoProducer userInfoProducer;
 
     @Override
     public UserDetails loadUserByUsername(String username) {
@@ -47,6 +51,7 @@ public class UserDetailsService implements org.springframework.security.core.use
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setUserId(UUID.randomUUID().toString());
         userRepository.save(new UserInfo(user.getUserId(),user.getUsername(), user.getPassword(), new HashSet<>()));
+        userInfoProducer.sendEventToKafka(user);
         return true;
     }
 }

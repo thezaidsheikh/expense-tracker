@@ -22,7 +22,7 @@ public class RefreshToken {
 
     private Instant expiresAt;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private UserInfo user;
 }
