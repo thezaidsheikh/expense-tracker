@@ -1,12 +1,12 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '4.0.1'
+	id 'org.springframework.boot' version '4.0.2'
 	id 'io.spring.dependency-management' version '1.1.7'
 }
 
-group = 'com.auth'
+group = 'com.expense-tracker'
 version = '0.0.1-SNAPSHOT'
-description = 'Expense tracker - Auth Service'
+description = 'Expense tracker - User Service'
 
 java {
 	toolchain {
@@ -44,10 +44,6 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	// Testing
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	// JWT Dependencies
-	implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
 	// Kafka
 	implementation 'org.springframework.boot:spring-boot-starter-kafka'
 	testImplementation 'org.springframework.boot:spring-boot-starter-kafka-test'
