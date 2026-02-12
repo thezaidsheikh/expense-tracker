@@ -14,10 +14,14 @@ public class UserInfoSerializer implements Serializer<UserInfoDto> {
     public void configure(Map<String, ?> configs, boolean isKey) {}
 
     public byte[] serialize(String TOPIC_NAME, UserInfoDto data){
-        byte[] retVal = null;
-        ObjectMapper objectMapper = new ObjectMapper();
-        retVal = objectMapper.writeValueAsString(data).getBytes();
-        return retVal;
+        try{
+            byte[] retVal = null;
+            ObjectMapper objectMapper = new ObjectMapper();
+            retVal = objectMapper.writeValueAsString(data).getBytes();
+            return retVal;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override public void close() {

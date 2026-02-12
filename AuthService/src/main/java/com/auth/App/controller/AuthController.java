@@ -53,7 +53,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequestDto req) throws AuthenticationException {
+    public ResponseEntity<?> login(@RequestBody AuthRequestDto req) {
         try{
             Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword()));
             if(authenticate.isAuthenticated()) {

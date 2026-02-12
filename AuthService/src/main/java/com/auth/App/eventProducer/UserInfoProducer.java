@@ -20,8 +20,12 @@ public class UserInfoProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendEventToKafka(UserInfoDto userInfoDto) {
-        org.springframework.messaging.Message<UserInfoDto> message = MessageBuilder.withPayload(userInfoDto).setHeader(KafkaHeaders.TOPIC,TOPIC_NAME).build();
-        this.kafkaTemplate.send(message);
+    public void sendEventToKafka(UserInfoDto eventData) {
+        try{
+            org.springframework.messaging.Message<UserInfoDto> message = MessageBuilder.withPayload(eventData).setHeader(KafkaHeaders.TOPIC,TOPIC_NAME).build();
+            this.kafkaTemplate.send(message);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
