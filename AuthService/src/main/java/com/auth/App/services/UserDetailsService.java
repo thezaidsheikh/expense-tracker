@@ -1,6 +1,7 @@
 package com.auth.App.services;
 
 import com.auth.App.entities.UserInfo;
+import com.auth.App.eventProducer.UserEventProducer;
 import com.auth.App.eventProducer.UserInfoProducer;
 import com.auth.App.model.UserInfoDto;
 import com.auth.App.repository.UserRepository;
@@ -51,7 +52,17 @@ public class UserDetailsService implements org.springframework.security.core.use
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setUserId(UUID.randomUUID().toString());
         userRepository.save(new UserInfo(user.getUserId(),user.getUsername(), user.getPassword(), new HashSet<>()));
-        userInfoProducer.sendEventToKafka(user);
+        UserEventProducer userEvent = userInfoEventProd(user);
+        userInfoProducer.sendEventToKafka(userEvent);
         return true;
+    }
+
+    private UserEventProducer userInfoEventProd(UserInfoDto user) {
+        return UserEventProducer.builder()
+                            .userId(user.getUserId())
+                            .firstName(user.getUsername())
+                            .lastName(user.getLastName())
+                            .email(user.getEmail())
+                            .phoneNumber(user.getPhoneNumber()).build();
     }
 }

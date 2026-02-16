@@ -1,21 +1,19 @@
-package com.auth.App.model;
+package com.auth.App.eventProducer;
 
-import com.auth.App.entities.UserInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import tools.jackson.databind.PropertyNamingStrategies;
 import tools.jackson.databind.annotation.JsonNaming;
 
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-@Data
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserInfoDto extends UserInfo {
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+public class UserEventProducer {
+    private String userId;
     private String firstName;
     private String lastName;
     private String email;
