@@ -1,11 +1,8 @@
 package com.expense_tracker.userservice.consumer;
 
-import com.expense_tracker.userservice.UserService;
-import com.expense_tracker.userservice.entities.UserInfo;
+import com.expense_tracker.userservice.service.UserService;
 import com.expense_tracker.userservice.entities.UserInfoDto;
-import com.expense_tracker.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;

@@ -12,10 +12,11 @@ import lombok.*;
 @Builder
 @Table(name = "users")
 public class UserInfo {
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Id
+    @Column(nullable = false, unique = true)
     @NonNull
     private String userId;
 

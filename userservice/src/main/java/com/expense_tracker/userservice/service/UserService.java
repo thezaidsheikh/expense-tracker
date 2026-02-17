@@ -1,4 +1,4 @@
-package com.expense_tracker.userservice;
+package com.expense_tracker.userservice.service;
 
 import com.expense_tracker.userservice.entities.UserInfo;
 import com.expense_tracker.userservice.entities.UserInfoDto;
@@ -6,6 +6,7 @@ import com.expense_tracker.userservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -59,5 +60,12 @@ public class UserService {
             existingUser.setProfilePic(updateRequest.getProfilePic());
         }
         return existingUser;
+    }
+
+    public UserInfoDto getUser(String userId) throws Exception {
+        Optional<UserInfo> userRes = this.userRepository.findByUserId(userId);
+        if(userRes.isEmpty()) throw new Exception("User not found");
+        UserInfo user = userRes.get();
+        return new UserInfoDto().builder().userId(user.getUserId()).firstName(user.getFirstName()).lastName(user.getLastName()).phoneNumber(user.getPhoneNumber()).email(user.getEmail()).profilePic(user.getProfilePic()).build();
     }
 }
