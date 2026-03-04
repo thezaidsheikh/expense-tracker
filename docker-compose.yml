@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+  user-service:
+    image: userservice:latest
+    container_name: user-service
+    ports:
+      - "3003:3003"
+    networks:
+      - dockerdb_default
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DB: user_service
+      MYSQL_USER: root
+      MYSQL_PASSWORD:
+      KAFKA_HOST: kafka-broker
+      KAFKA_PORT: 29092
+
+  auth-service:
+    image: authservice:latest
+    container_name: auth-service
+    ports:
+      - "3002:3002"
+    networks:
+      - dockerdb_default
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DB: auth_service
+      MYSQL_USER: root
+      MYSQL_PASSWORD:
+      KAFKA_HOST: kafka-broker
+      KAFKA_PORT: 29092
+
+  kong-service:
+    image: kong:latest
+    container_name: kong-service
+    restart: on-failure
+    networks:
+      - dockerdb_default
+    volumes:
+      - "/Users/thezaidsheikh/DockerDB/kong/config:/usr/local/kong/declarative"
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: "/usr/local/kong/declarative/kong.yml"
+      KONG_PROXY_ACCESS_LOG: "/dev/stdout"
+      KONG_ADMIN_ACCESS_LOG: "/dev/stdout"
+      KONG_PROXY_ERROR_LOG: "/dev/stderr"
+      KONG_ADMIN_ERROR_LOG: "/dev/stderr"
+      KONG_ADMIN_LISTEN: "0.0.0.0:8001, 0.0.0.0:8444 ssl"
+      KONG_ADMIN_GUI_LISTEN: 0.0.0.0:8002, 0.0.0.0:8445 ssl # Kong Manager on HTTP + HTTPS
+      KONG_ADMIN_GUI_URL: http://localhost:8002 # URL for GUI links
+      KONG_LOG_LEVEL: "debug"
+      KONG_PLUGINS: "bundled"
+      KONG_LUA_PACKAGE_PATH: "/usr/local/share/lua/5.1/?.lua;;"
+    ports:
+      - "8000:8000" # Proxy HTTP
+      - "8443:8443" # Proxy HTTPS
+      - "8001:8001" # Admin API HTTP
+      - "8444:8444" # Admin API HTTPS
+      - "8002:8002" # Kong Manager HTTP
+      - "8445:8445" # Kong Manager HTTPS
+    depends_on:
+      - auth-service
+      - user-service
+
+networks:
+  dockerdb_default:
+    external: true
